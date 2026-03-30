@@ -47,9 +47,9 @@ The solution for this case containerizes both the training and serving processes
 5. Test the model with Swagger UI:
     Access: http://localhost:8000/docs. Select `POST /predict`. Click `Try it out`. Enter a prompt and execute.
 6. Test the API Using curl:
-    curl -X POST "http://localhost:8000/predict" \
+    `curl -X POST "http://localhost:8000/predict" \
         -H "Content-Type: application/json" \
-        -d '{"prompt":"Once upon a time","max_length":50}'
+        -d '{"prompt":"Once upon a time","max_length":50}'`
    
 7. Expected response:
     {
@@ -58,10 +58,10 @@ The solution for this case containerizes both the training and serving processes
     }
 
 ### Notes
-The base model can be changed by editing the training command in `docker-compose.yml` (e.g., --model gpt2, --model bert).
-Training and API are separated into distinct services to keep the API image lightweight.
-The shared volume `./output` ensures the trained model is available to the API.
-This pipeline is generic and can be adapted to different models and datasets.
+- The base model can be changed by editing the training command in `docker-compose.yml` (e.g., --model gpt2, --model bert).
+- Training and API are separated into distinct services to keep the API image lightweight.
+- The shared volume `./output` ensures the trained model is available to the API.
+- This pipeline is generic and can be adapted to different models and datasets.
 
 
 ## Second part: AWS infrastructure
