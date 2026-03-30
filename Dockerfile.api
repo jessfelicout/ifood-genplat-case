@@ -1,0 +1,22 @@
+# Base leve com Python
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Instalar dependências necessárias para servir o modelo
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir \
+    torch==2.4.0 \
+    transformers==4.40.0 \
+    fastapi \
+    uvicorn[standard] \
+    accelerate
+
+# Copiar código da API e o modelo treinado
+COPY . /app
+
+# Expor a porta da API
+EXPOSE 8000
+
+# Comando para iniciar o servidor FastAPI
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]

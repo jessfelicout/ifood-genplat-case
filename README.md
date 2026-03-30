@@ -25,24 +25,61 @@ The last skill a ML Engineer must have is cloud proficiency. For iFood, AWS is o
 
 For this exercise, we would like for you to propose an AWS architecture to serve a solution for one of the two previous exercises. A single page describing the resources needed is sufficient, although you are free to provide code if you like it. Please have in mind that this structure must be reliable, scalable and as cheap as possible without compromising the other two requisites.
 
-## BONUS!!
+## SOLUTION
 
-These exercises are all optional! They are not required to evaluate how you'll perform in this job, and they require no skills listed in the job description whatsoever! They are fun and difficult, though 😈
+The solution for this case containerizes both the training and serving processes using Docker, and orchestrates them with Docker Compose, ensuring reproducibility and simplicity.
 
-Let's get to it!
 
-### Level 1 and 2
+### Project Structure
+- `Dockerfile`: environment for training/fine-tuning
+- `Dockerfile.api`: environment for the API
+- `docker-compose.yml`: orchestrates training and API services
+- `data/`: dataset for training (e.g., `train.jsonl`)
+- `output/`: directory where the fine-tuned model is saved
+- `api.py`: FastAPI application serving predictions with Swagger
 
-Can you figure out the passwords for the binaries `bonus/level01` and `bonus/level02`?
+### How to Run
 
-### Level 3
+1. Replace your training data in `./data/train.jsonl` 
+2. Train the model using: `docker-compose run train`
+3. The fine-tuned model will be saved in `./output`.
+4. To serve predictions run: `docker-compose up api`
+    Access:
+    Swagger UI: http://localhost:8000/docs
+    Testing the `/predict` Endpoint:
+    Select `POST /predict`.
+    Click `Try it out`.
+    Enter a prompt and execute.
 
-Can you get a shell from the binary `bonus/level03`?
+    Using curl
+    curl -X POST "http://localhost:8000/predict" \
+        -H "Content-Type: application/json" \
+        -d '{"prompt":"Once upon a time","max_length":50}'
 
-```
- Ex.
- $ ./bonus/level03
- [+] calling some crazy function, can you get a shell?
- password: something_that_executes_/bin/sh
- $ echo "Habemus shell!"
-```
+    Expected response:
+    {
+    "prompt": "Once upon a time",
+    "generated_text": "Once upon a time in a magical world..."
+    }
+
+### Notes
+The base model can be changed by editing the training command in `docker-compose.yml` (e.g., --model gpt2, --model bert).
+Training and API are separated into distinct services to keep the API image lightweight.
+The shared volume `./output` ensures the trained model is available to the API.
+This pipeline is generic and can be adapted to different models and datasets.
+
+
+## Second part: AWS infrastructure
+The second part of this test is to present a AWS arquitecture to serve the solution above. 
+I'd like to propose the use of the following modules:
+- `S3`: for data storage
+- `SageMaker`: for the fine-tunning step (and the output will also be salved on S3).
+- `ECS Fargate`: to run the containerized FastAPI app
+- `Application Load Balancer (ALB)`: Routes HTTP/HTTPS traffic to the API containers.
+- `CloudWatch`: for monitoring and logs
+
+![AWS Infrastructure architeture for GenIA Fine-Tuning Automation](image.png)
+
+
+
+

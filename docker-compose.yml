@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  train:
+    build:
+      context: .
+      dockerfile: Dockerfile   # Dockerfile for training
+    container_name: generative-train
+    volumes:
+      - ./data:/app/data       # input data
+      - ./output:/app/output   # save trained model
+    command: python train.py --model gpt2 --dataset /app/data/train.jsonl --epochs 3
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api   # Dockerfile for API 
+    container_name: generative-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./output:/app/output       
+    command: uvicorn api:app --host 0.0.0.0 --port 8000
