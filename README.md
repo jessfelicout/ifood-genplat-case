@@ -44,19 +44,14 @@ The solution for this case containerizes both the training and serving processes
 2. Train the model using: `docker-compose run train`
 3. The fine-tuned model will be saved in `./output`.
 4. To serve predictions run: `docker-compose up api`
-    Access:
-    Swagger UI: http://localhost:8000/docs
-    Testing the `/predict` Endpoint:
-    Select `POST /predict`.
-    Click `Try it out`.
-    Enter a prompt and execute.
-
-    Using curl
+5. Test the model with Swagger UI:
+    Access: http://localhost:8000/docs. Select `POST /predict`. Click `Try it out`. Enter a prompt and execute.
+6. Test the API Using curl:
     curl -X POST "http://localhost:8000/predict" \
         -H "Content-Type: application/json" \
         -d '{"prompt":"Once upon a time","max_length":50}'
-
-    Expected response:
+   
+7. Expected response:
     {
     "prompt": "Once upon a time",
     "generated_text": "Once upon a time in a magical world..."
